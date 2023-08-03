@@ -22,7 +22,7 @@ public class ServletFiles extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         action = req.getServletPath();
         switch (action){
-            case "/person/img":
+            case "/person/Img":
                 int id=Integer.parseInt(req.getParameter("file")!=null ? req.getParameter("file"):"0");
                 person=new DaoPersons().findFile(id);
                 OutputStream outputStream = resp.getOutputStream();

@@ -40,7 +40,7 @@ public class ServletPerson extends HttpServlet {
     switch (action){
         case"/person/view":
             req.setAttribute("persons",new DaoPersons().findAll());
-            redirect="index.jsp";
+            redirect="/views/index.jsp";
     }
 req.getRequestDispatcher(redirect).forward(req,resp);
 
@@ -54,15 +54,12 @@ req.getRequestDispatcher(redirect).forward(req,resp);
         resp.setContentType("text/html");
         switch (action){
         case"/person/save":
-            System.out.println("Dentro del save");
            try {
                person =new Persons();
-               System.out.println("Dentro del try");
                for(Part part: req.getParts()){
                    fileName = part.getSubmittedFileName();
                    System.out.println(fileName);
                    if (fileName!=null){
-                       System.out.println("Dentro del if");
                        mime =part.getContentType().split("/")[1];
                        System.out.println(mime);
                        String uid = UUID.randomUUID().toString();
@@ -91,5 +88,6 @@ req.getRequestDispatcher(redirect).forward(req,resp);
 
             break;
     }
+        System.out.println(redirect);
     }
 }

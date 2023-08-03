@@ -25,6 +25,7 @@ public class DaoPersons {
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
+                person=new Persons();
                 person.setId(rs.getLong("id"));
                 person.setName(rs.getString("name"));
                 person.getFoto(rs.getBinaryStream("foto"));
@@ -51,7 +52,7 @@ public class DaoPersons {
             if (rs.next()) {
                 person = new Persons();
                 person.setFilName(rs.getString("file_name"));
-                person.setFile(rs.getBytes("file"));
+                person.setFile(rs.getBytes("foto"));
             }
         } catch (SQLException e) {
             Logger.getLogger(DaoPersons.class.getName())
@@ -66,12 +67,20 @@ public class DaoPersons {
         try {
             conn = new MySQLConnection().connect();
             conn.setAutoCommit(false);
-            String query = "INSERT INTO persons (name,foto) values (?,?)";
+            String query = "INSERT INTO persons (name) values (?)";
             ps = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, person.getName());
-            ps.setBytes(2, person.getFile());
             ps.execute();
             rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                long id = rs.getLong(1);//ID pokemon
+                String querySaveImg = "INSERT INTO files (foto, person_id,file_name) VALUES (?,?,?);";
+                ps = conn.prepareStatement(querySaveImg);
+                ps.setBytes(1, person.getFile());
+                ps.setLong(2, id);
+                ps.setString(3, person.getFilName());
+                ps.execute();
+            }
             conn.commit();
             return true;
         } catch (SQLException e) {
